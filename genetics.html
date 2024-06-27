@@ -25,14 +25,16 @@
             border-radius: 10px;
             text-align: center;
         }
-        input { 
+        textarea { 
             width: 300px; 
+            height: 150px;
             margin-bottom: 10px;
             background-color: #2a3635;
             border: 1px solid #3a4a48;
             color: #fff;
             padding: 5px;
             text-transform: uppercase;
+            resize: vertical;
         }
         button {
             margin-bottom: 10px;
@@ -91,7 +93,7 @@
 <body id="main-page-body">
     <div class="container">
         <h1>Калькулятор генов <a style="color: green;" href="https://store.steampowered.com/app/252490" target="_blank"><b>Rust</b></a></h1>
-        <input type="text" id="geneInput" placeholder="YGGYHH,YYGHYH,YHYWYY,XYYYGY">
+        <textarea id="geneInput" placeholder="YGGYHH,YYGHYH,YHYWYY,XYYYGY"></textarea>
         <br>
         <button onclick="calculate()">Calculate</button>
         <br>
@@ -114,17 +116,23 @@
 
         function calculate() {
             const input = document.getElementById('geneInput').value;
-            const genes = input.split(',').map(s => s.trim()).join('');
+            const geneGroups = input.split(/[,\s]+/).filter(group => group.length === 6);
 
-            if (!/^[GHYWX]{24}$/.test(genes)) {
-                alert('Пожалуйста, введите 4 группы по 6 символов, разделенные запятыми. Используйте только G, H, Y, W, X');
+            if (geneGroups.length < 3 || geneGroups.length > 8) {
+                alert('Пожалуйста, введите от 3 до 8 групп по 6 символов. Используйте только G, H, Y, W, X');
+                return;
+            }
+
+            const genes = geneGroups.join('');
+            if (!/^[GHYWX]+$/.test(genes)) {
+                alert('Пожалуйста, используйте только символы G, H, Y, W, X');
                 return;
             }
 
             const columns = [[], [], [], [], [], []];
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < geneGroups.length; i++) {
                 for (let j = 0; j < 6; j++) {
-                    columns[j].push(genes[i * 6 + j]);
+                    columns[j].push(geneGroups[i][j]);
                 }
             }
 
