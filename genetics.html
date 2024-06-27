@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор генов [Rust]</title>
+    <style>
+        body#main-page-body {
+            max-width: 100%;
+            width: auto;
+            padding: 0 5px;
+            min-height: 100vh;
+            background: #151d1c;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        input { 
+            width: 300px; 
+            margin-bottom: 10px;
+            background-color: #2a3635;
+            border: 1px solid #3a4a48;
+            color: #fff;
+            padding: 5px;
+            text-transform: uppercase;
+        }
+        button {
+            margin-bottom: 10px;
+            background-color: #2a3635;
+            border: 1px solid #3a4a48;
+            color: #fff;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #result {
+            border: 2px solid #3a4a48;
+            padding: 10px;
+            background-color: #2a3635;
+            display: inline-block;
+            min-width: 200px;
+        }
+        .green { color: #4CAF50; }
+        .yellow { color: #FFEB3B; }
+        .red { color: #F44336; }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8em;
+        }
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        [data-tooltip] {
+            position: relative;
+            cursor: pointer;
+        }
+        [data-tooltip]:after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        [data-tooltip]:hover:after {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body id="main-page-body">
+    <div class="container">
+        <h1>Калькулятор генов <a style="color: green;" href="https://store.steampowered.com/app/252490" target="_blank"><b>Rust</b></a></h1>
+        <input type="text" id="geneInput" placeholder="YGGYHH,YYGHYH,YHYWYY,XYYYGY">
+        <br>
+        <button onclick="calculate()">Calculate</button>
+        <br>
+        <div id="result"></div>
+    </div>
+    
+    <div class="footer">
+        <a href="https://t.me/Psycho_O" target="_blank"><h4>Coded by Psycho_O & ClaudeAI</h4></a>
+    </div>
+
+    <script>
+        const geneStrength = {
+            'G': 60, 'H': 60, 'Y': 60,
+            'W': 100, 'X': 100
+        };
+
+        document.getElementById('geneInput').addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+
+        function calculate() {
+            const input = document.getElementById('geneInput').value;
+            const genes = input.split(',').map(s => s.trim()).join('');
+
+            if (!/^[GHYWX]{24}$/.test(genes)) {
+                alert('Пожалуйста, введите 4 группы по 6 символов, разделенные запятыми. Используйте только G, H, Y, W, X');
+                return;
+            }
+
+            const columns = [[], [], [], [], [], []];
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 6; j++) {
+                    columns[j].push(genes[i * 6 + j]);
+                }
+            }
+
+            let result = '';
+            for (let col of columns) {
+                const strengthCounts = col.reduce((acc, gene) => {
+                    acc[gene] = (acc[gene] || 0) + geneStrength[gene];
+                    return acc;
+                }, {});
+
+                let maxStrength = 0;
+                let maxGenes = [];
+                for (let gene in strengthCounts) {
+                    if (strengthCounts[gene] > maxStrength) {
+                        maxStrength = strengthCounts[gene];
+                        maxGenes = [gene];
+                    } else if (strengthCounts[gene] === maxStrength) {
+                        maxGenes.push(gene);
+                    }
+                }
+
+                if (maxGenes.length === 1) {
+                    result += `<span class="${getColor(maxGenes[0])}" data-tooltip="100%">${maxGenes[0]}</span>`;
+                } else {
+                    result += `<span class="yellow" data-tooltip="50/50">[${maxGenes.join('/')}]</span>`;
+                }
+            }
+
+            document.getElementById('result').innerHTML = result;
+        }
+
+        function getColor(gene) {
+            return ['G', 'H', 'Y'].includes(gene) ? 'green' : 'red';
+        }
+    </script>
+</body>
+</html>
