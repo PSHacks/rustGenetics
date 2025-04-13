@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор генов [Rust]</title>
+    <title>Genetic Calculator [Rust]</title>
     <style>
         body#main-page-body {
             max-width: 100%;
@@ -93,7 +93,7 @@
 </head>
 <body id="main-page-body">
     <div class="container">
-        <h1>Калькулятор генов <a style="color: #ff1100;" href="https://store.steampowered.com/app/252490" target="_blank"><b>Rust</b></a></h1>
+        <h1>Genetic Calculator <a style="color: #ff1100;" href="https://store.steampowered.com/app/252490" target="_blank"><b>Rust</b></a></h1>
         <textarea id="geneInput" placeholder="YGGYHH,YYGHYH,YHYWYY,XYYYGY"></textarea>
         <br>
         <button onclick="calculate()">Calculate</button>
@@ -102,7 +102,7 @@
     </div>
     
     <div class="footer">
-        <a href="https://t.me/Psycho_O" target="_blank"><h4>Coded by Psycho_O & ClaudeAI</h4></a>
+        <h4>Good luck and Have Fun!</h4>
     </div>
 
     <script>
@@ -120,13 +120,13 @@
             const geneGroups = input.split(/[,\s]+/).filter(group => group.length === 6);
 
             if (geneGroups.length < 3 || geneGroups.length > 8) {
-                alert('Пожалуйста, введите от 3 до 8 групп по 6 символов. Используйте только G, H, Y, W, X');
+                alert('Please enter between 3 and 8 groups of 6 characters. Use only G, H, Y, W, X');
                 return;
             }
 
             const genes = geneGroups.join('');
             if (!/^[GHYWX]+$/.test(genes)) {
-                alert('Пожалуйста, используйте только символы G, H, Y, W, X');
+                alert('Please use only G, H, Y, W, X characters');
                 return;
             }
 
